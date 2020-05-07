@@ -20,9 +20,9 @@ export class IndexGuard implements CanActivate {
             console.log('logged');
             this.router.navigate(['home']);
            } else {
+            loggedIn = true;
             console.log(loggedIn);
             console.log('nologged');
-            // this.router.navigate(['/login']);
            }
        })
     );

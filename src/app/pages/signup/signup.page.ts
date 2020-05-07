@@ -49,11 +49,10 @@ export class SignupPage implements OnInit {
         return true;
     } else {
         this.toastService.presentToastError(
-          'Datos del incorrectos, por favor revisa todos los campos'
+          'Datos insertados incorrectos, por favor revisa todos los campos'
         );
         return false;
     }
-
   }
 
   validatePassword() {

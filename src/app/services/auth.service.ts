@@ -18,6 +18,7 @@ import { ToastService } from './toast.service';
 })
 export class AuthService {
   user$: Observable<User>;
+  userUid = '';
 
   constructor(
     private httpService: HttpService,
@@ -29,6 +30,7 @@ export class AuthService {
     this.user$ = this.afAuth.authState.pipe(
       switchMap( user => {
           if ( user ) {
+            this.userUid = user.uid;
             return this.afs.doc<User>(`users/${user.uid}`).valueChanges();
           } else {
             return of(null);
@@ -40,7 +42,12 @@ export class AuthService {
   async googleSignIn() {
     const credential = await this.afAuth.signInWithPopup(new auth.GoogleAuthProvider());
     /* console.log(credential.user); */
-    this.googleUpdateUserData(credential.user);
+    this.afs.collection('users').doc(`${credential.user.uid}`).valueChanges().subscribe( response => {
+      if ( response === null || response === undefined ) {
+        this.googleUpdateUserData(credential.user);
+      }
+    });
+    
     return this.router.navigate(['home']);
   }
 
@@ -51,7 +58,6 @@ export class AuthService {
     const completeName = user.displayName.split(' ', 3);
 
     const data = {
-      uid: user.uid,
       email: user.email,
       name: completeName != null && completeName[0] != null ? completeName[0] : '',
       firstSurname: completeName != null && completeName[1] != null ? completeName[1] : '',
@@ -105,7 +111,6 @@ export class AuthService {
     const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${userUid}`);
 
     const data = {
-      uid: userUid,
       email: userData.email,
       name: userData.name,
       firstSurname: userData.firstSurname,
