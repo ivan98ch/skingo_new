@@ -74,7 +74,7 @@ export class AuthService {
       );
 
     } catch (err) {
-      this.toastService.presentToast(
+      this.toastService.presentToastError(
         'El email o la contraseña son incorrectos, intentalo de nuevo'
       );
       console.log('Error en el Login', err);
@@ -90,11 +90,11 @@ export class AuthService {
         });
     } catch (err) {
       if ( err.code === 'auth/email-already-in-use' ) {
-        this.toastService.presentToast(
+        this.toastService.presentToastError(
           'Ya existe un email como este, intenta con otro...'
         );
       } else {
-        this.toastService.presentToast(
+        this.toastService.presentToastError(
           'Datos del incorrectos, por favor revisa todos los campos'
         );
       }

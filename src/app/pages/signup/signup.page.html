@@ -12,11 +12,11 @@
     <form>
         <ion-list>
             <ion-item>
-                <ion-label position="stacked">Nombre</ion-label>
+                <ion-label position="stacked">Nombre*</ion-label>
                 <ion-input autocomplete="off" name="name" type="text" [(ngModel)]="postData.name"></ion-input>
             </ion-item>
             <ion-item>
-                <ion-label position="stacked">Primer apellido</ion-label>
+                <ion-label position="stacked">Primer apellido*</ion-label>
                 <ion-input autocomplete="off" name="firstSurname" type="text" [(ngModel)]="postData.firstSurname"></ion-input>
             </ion-item>
             <ion-item>
@@ -24,26 +24,26 @@
                 <ion-input autocomplete="off" name="secondSurname" type="text" [(ngModel)]="postData.secondSurname"></ion-input>
             </ion-item>
             <ion-item>
-                <ion-label position="stacked">Email</ion-label>
+                <ion-label position="stacked">Email*</ion-label>
                 <ion-input autocomplete="off" name="email" type="email" [(ngModel)]="postData.email"></ion-input>
             </ion-item>
             <ion-item>
-                <ion-label position="stacked">Contraseña</ion-label>
+                <ion-label position="stacked">Contraseña*</ion-label>
                 <ion-input autocomplete="off" name="password" type="password" [(ngModel)]="postData.password"></ion-input>
             </ion-item>
             <ion-item>
-                <ion-label position="stacked">Repetir contraseña</ion-label>
+                <ion-label position="stacked">Repetir contraseña*</ion-label>
                 <ion-input autocomplete="off" name="repeatPassword" type="password" [(ngModel)]="postData.repeatPassword"></ion-input>
             </ion-item>
             <ion-item>
-                <ion-label position="stacked">Genero</ion-label>
+                <ion-label position="stacked">Genero*</ion-label>
                 <ion-select name="gender" [(ngModel)]="postData.gender">
                     <ion-select-option value="mujer">Mujer</ion-select-option>
                     <ion-select-option value="hombre">Hombre</ion-select-option>
                 </ion-select>
             </ion-item>
             <ion-item>
-                <ion-label position="stacked">Fecha de nacimiento</ion-label>
+                <ion-label position="stacked">Fecha de nacimiento*</ion-label>
                 <ion-datetime name="birthDate" pickerFormat="DD/MMM/YYYY" displayFormat="DD MMM YYYY" [(ngModel)]="postData.birthDate"></ion-datetime>
             </ion-item>
 

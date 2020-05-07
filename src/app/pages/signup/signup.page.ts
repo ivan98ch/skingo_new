@@ -45,7 +45,8 @@ export class SignupPage implements OnInit {
       this.postData.name && this.postData.firstSurname && this.postData.email &&
       this.postData.password && this.postData.repeatPassword && this.postData.gender &&
       name.length > 0 && firstSurname.length > 0 && email.length > 0 &&
-      password.length > 0 && repeatPassword.length > 0 && gender.length > 0 && this.postData.birthDate != null
+      password.length > 0 && repeatPassword.length > 0 && gender.length > 0 &&
+      this.postData.birthDate != null && password === repeatPassword
     );
   }
 
@@ -59,7 +60,7 @@ export class SignupPage implements OnInit {
       await this.authService.emailRegister(this.postData);
     } else {
       // Datos incorrectos
-      this.toastService.presentToast(
+      this.toastService.presentToastError(
         'Datos del incorrectos, por favor revisa todos los campos'
       );
     }

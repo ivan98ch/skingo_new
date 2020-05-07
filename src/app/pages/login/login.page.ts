@@ -39,7 +39,7 @@ export class LoginPage implements OnInit {
     if (this.validateInputs()) {
       await this.authService.emailSignIn(this.postData);
     } else {
-      this.toastService.presentToast(
+      this.toastService.presentToastError(
         'Please enter email/username or password.'
       );
     }
