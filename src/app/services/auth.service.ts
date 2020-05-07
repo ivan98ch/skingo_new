@@ -91,7 +91,7 @@ export class AuthService {
     } catch (err) {
       if ( err.code === 'auth/email-already-in-use' ) {
         this.toastService.presentToast(
-          'Ya existe un email como este, intenta con otro..'
+          'Ya existe un email como este, intenta con otro...'
         );
       } else {
         this.toastService.presentToast(
