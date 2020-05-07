@@ -41,13 +41,29 @@ export class SignupPage implements OnInit {
     const password = this.postData.password.trim();
     const repeatPassword = this.postData.repeatPassword.trim();
     const gender = this.postData.gender.trim();
-    return (
-      this.postData.name && this.postData.firstSurname && this.postData.email &&
-      this.postData.password && this.postData.repeatPassword && this.postData.gender &&
-      name.length > 0 && firstSurname.length > 0 && email.length > 0 &&
-      password.length > 0 && repeatPassword.length > 0 && gender.length > 0 &&
-      this.postData.birthDate != null && password === repeatPassword
+    if ( this.postData.name && this.postData.firstSurname && this.postData.email &&
+         this.postData.password && this.postData.repeatPassword && this.postData.gender &&
+         name.length > 0 && firstSurname.length > 0 && email.length > 0 &&
+         password.length > 0 && repeatPassword.length > 0 && gender.length > 0 &&
+         this.postData.birthDate != null  ) {
+        return true;
+    } else {
+        this.toastService.presentToastError(
+          'Datos del incorrectos, por favor revisa todos los campos'
+        );
+        return false;
+    }
+
+  }
+
+  validatePassword() {
+    if ( this.postData.password === this.postData.repeatPassword ) {
+      return true;
+    }
+    this.toastService.presentToastError(
+      'Las contraseñas no coinciden, por favor revisa los campos'
     );
+    return false;
   }
 
   async onRegister() {
@@ -55,14 +71,9 @@ export class SignupPage implements OnInit {
     this.postData.birthDate = this.pipe.transform(this.postData.birthDate, 'dd/MM/yyyy');
     // console.log(this.postData);
 
-    if (this.validateInputs()) {
-      // Datos correctos
-      await this.authService.emailRegister(this.postData);
-    } else {
-      // Datos incorrectos
-      this.toastService.presentToastError(
-        'Datos del incorrectos, por favor revisa todos los campos'
-      );
+    if ( this.validateInputs() && this.validatePassword() ) {
+        // Datos correctos
+        await this.authService.emailRegister(this.postData);
     }
   }
 

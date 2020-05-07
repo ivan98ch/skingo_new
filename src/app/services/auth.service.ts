@@ -3,9 +3,7 @@ import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
-import { AuthConstants } from './../config/auth-constants';
 import { HttpService } from './http.service';
-
 
 import { auth } from 'firebase/app';
 import { AngularFireAuth } from '@angular/fire/auth';
