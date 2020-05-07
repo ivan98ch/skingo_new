@@ -1,9 +1,23 @@
-<ion-header>
+<!-- <ion-header>
     <ion-toolbar>
         <ion-title>Camera</ion-title>
     </ion-toolbar>
-</ion-header>
+</ion-header> -->
 
 <ion-content>
+    <ion-button (click)='takePicture()'>Hacer una foto</ion-button>
+    <img *ngIf='image' [src]='image' alt='image'>
+    <br>
+    <ion-card>
+        <ion-card-content>
+            <button ion-button color="danger" block (click)=takeFromGallery();>
+                Buscar la foto en la galeria
+                <ion-icon name="cloud-download-outline"></ion-icon>
+            </button>
+        </ion-card-content>
+    </ion-card>
+    <img *ngIf='image2' [src]='image2' alt='image2'>
+
+    <ion-button *ngIf='image || image2' (click)='cropPicture()'>Recortar la imagen</ion-button>
 
 </ion-content>

@@ -15,6 +15,10 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 
 import { environment } from 'src/environments/environment';
+import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
+import { WebView } from '@ionic-native/ionic-webview/ngx';
+import { Crop } from '@ionic-native/crop/ngx';
+
 
 @NgModule({
   declarations: [AppComponent],
@@ -32,6 +36,9 @@ import { environment } from 'src/environments/environment';
     StatusBar,
     SplashScreen,
     HttpClientModule,
+    Camera,
+    WebView,
+    Crop,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]
