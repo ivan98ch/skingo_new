@@ -24,7 +24,7 @@ export class LoginPage implements OnInit {
   ngOnInit() {}
 
   validateInputs() {
-    console.log(this.postData);
+    // console.log(this.postData);
     const username = this.postData.username.trim();
     const password = this.postData.password.trim();
     return (

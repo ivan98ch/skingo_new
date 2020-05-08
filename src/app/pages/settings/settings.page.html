@@ -4,6 +4,37 @@
     </ion-toolbar>
 </ion-header>
 
-<ion-content>
-    <ion-button color='dark' (click)="auth.signOut()">Log Out</ion-button>
+<ion-content class="ion-padding">
+    <div class="center">
+        <img src="assets/icon/favicon.png" />
+        <h1>Modificar Usuario</h1>
+    </div>
+    <form>
+        <ion-list>
+            <ion-item>
+                <ion-label position="stacked">Nombre*</ion-label>
+                <ion-input autocomplete="off" name="name" type="text" [(ngModel)]="postData.name"></ion-input>
+            </ion-item>
+            <ion-item>
+                <ion-label position="stacked">Primer apellido*</ion-label>
+                <ion-input autocomplete="off" name="firstSurname" type="text" [(ngModel)]="postData.firstSurname"></ion-input>
+            </ion-item>
+            <ion-item>
+                <ion-label position="stacked">Segundo apellido</ion-label>
+                <ion-input autocomplete="off" name="secondSurname" type="text" [(ngModel)]="postData.secondSurname"></ion-input>
+            </ion-item>
+            <ion-item>
+                <ion-label position="stacked">Nueva contraseña*</ion-label>
+                <ion-input autocomplete="off" name="password" type="password" [(ngModel)]="postData.password"></ion-input>
+            </ion-item>
+            <ion-item>
+                <ion-label position="stacked">Repetir contraseña*</ion-label>
+                <ion-input autocomplete="off" name="repeatPassword" type="password" [(ngModel)]="postData.repeatPassword"></ion-input>
+            </ion-item>
+
+        </ion-list>
+        <ion-button expand="block" share="round" color="skingoColor" (click)='updateUser()'>Modificar</ion-button>
+    </form>
+    <br>
+    <ion-button expand="block" color='skingoColor' (click)="auth.signOut()">Log Out</ion-button>
 </ion-content>
