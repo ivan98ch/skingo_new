@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, map } from 'rxjs/operators';
 
 import { HttpService } from './http.service';
 
@@ -9,34 +9,32 @@ import { auth } from 'firebase/app';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
 
-import { User } from '../models/user.model';
-import { UserEmail } from '../models/userEmail.model';
 import { ToastService } from './toast.service';
+import { UserModel } from '../models/userModel.model';
+import { UserRegisterModel } from '../models/userRegisterModel.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  user$: Observable<User>;
+
+  validateUser: boolean;
   userUid = '';
 
   constructor(
-    private httpService: HttpService,
     private router: Router,
     private afAuth: AngularFireAuth,
     private afs: AngularFirestore,
     private toastService: ToastService
   ) {
-    this.user$ = this.afAuth.authState.pipe(
-      switchMap( user => {
-          if ( user ) {
-            this.userUid = user.uid;
-            return this.afs.doc<User>(`users/${user.uid}`).valueChanges();
-          } else {
-            return of(null);
-          }
-      } )
-    );
+    this.afAuth.authState.pipe(map (user => {
+        if (user != null) {
+          this.userUid = user.uid;
+          this.validateUser = true;
+        } else {
+          this.validateUser = false;
+        }
+      }));
   }
 
   async googleSignIn() {
@@ -45,15 +43,17 @@ export class AuthService {
     this.afs.collection('users').doc(`${credential.user.uid}`).valueChanges().subscribe( response => {
       if ( response === null || response === undefined ) {
         this.googleUpdateUserData(credential.user);
+        this.toastService.presentToastSuccess(
+          'Entra de nuevo para confirmar tu registro, gracias'
+        );
       }
     });
-    
     return this.router.navigate(['home']);
   }
 
   private googleUpdateUserData( user ) {
     // Insertamos la informacion del usuario en Firestorm
-    const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${user.uid}`);
+    const userRef: AngularFirestoreDocument<UserModel> = this.afs.doc(`users/${user.uid}`);
 
     const completeName = user.displayName.split(' ', 3);
 
@@ -85,7 +85,7 @@ export class AuthService {
     }
   }
 
-  async emailRegister( user: UserEmail ) {
+  async emailRegister( user: UserRegisterModel ) {
     try {
       return await this.afAuth.createUserWithEmailAndPassword(user.email, user.password)
         .then( userRegistered => {
@@ -106,9 +106,9 @@ export class AuthService {
     }
   }
 
-  private emailUpdateUserData( userData: UserEmail, userUid ) {
+  private emailUpdateUserData( userData: UserRegisterModel, userUid ) {
     // Insertamos la informacion del usuario en Firestorm
-    const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${userUid}`);
+    const userRef: AngularFirestoreDocument<UserModel> = this.afs.doc(`users/${userUid}`);
 
     const data = {
       email: userData.email,
