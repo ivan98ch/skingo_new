@@ -2,6 +2,9 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from '@angular/fire/firestore';
 import { AuthService } from './auth.service';
 import { UserModel } from '../models/userModel.model';
+import { AngularFireAuth } from '@angular/fire/auth';
+import { map } from 'rxjs/operators';
+import { HomeGuard } from '../guards/home.guard';
 
 
 @Injectable({
@@ -9,14 +12,15 @@ import { UserModel } from '../models/userModel.model';
 })
 export class UserUpdateService {
 
-
   constructor(
     private afs: AngularFirestore,
-    private authService: AuthService
+    private authService: AuthService,
+    private afAuth: AngularFireAuth,
+    private guard: HomeGuard
   ) {}
 
   getUserData() {
-    const userRef: AngularFirestoreDocument<UserModel> = this.afs.doc(`users/${this.authService.userUid}`);
+    const userRef: AngularFirestoreDocument<UserModel> = this.afs.doc(`users/${this.guard.userUID}`);
     return userRef.valueChanges();
   }
 
@@ -30,7 +34,7 @@ export class UserUpdateService {
       birthDate: userData.birthDate
     };
 
-    const userRef: AngularFirestoreDocument<UserModel> = this.afs.doc(`users/${this.authService.userUid}`);
+    const userRef: AngularFirestoreDocument<UserModel> = this.afs.doc(`users/${this.guard.userUID}`);
     return userRef.set(data, { merge: true });
   }
 

@@ -8,7 +8,10 @@ import { isNullOrUndefined } from 'util';
   providedIn: 'root'
 })
 export class HomeGuard implements CanActivate {
-  constructor(private afAuth: AngularFireAuth, public router: Router) {}
+
+  userUID: string;
+
+  constructor(private afAuth: AngularFireAuth, private router: Router) {}
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
 
@@ -18,6 +21,7 @@ export class HomeGuard implements CanActivate {
         this.router.navigate(['/login']);
         return false;
       } else {
+        this.userUID = auth.uid;
         return true;
       }
 

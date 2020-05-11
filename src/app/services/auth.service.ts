@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { switchMap, map } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
 
 import { HttpService } from './http.service';
 
@@ -18,28 +18,16 @@ import { UserRegisterModel } from '../models/userRegisterModel.model';
 })
 export class AuthService {
 
-  validateUser: boolean;
-  userUid = '';
-
   constructor(
+    private httpService: HttpService,
     private router: Router,
     private afAuth: AngularFireAuth,
     private afs: AngularFirestore,
     private toastService: ToastService
-  ) {
-    this.afAuth.authState.pipe(map (user => {
-        if (user != null) {
-          this.userUid = user.uid;
-          this.validateUser = true;
-        } else {
-          this.validateUser = false;
-        }
-      }));
-  }
+  ) {}
 
   async googleSignIn() {
     const credential = await this.afAuth.signInWithPopup(new auth.GoogleAuthProvider());
-    /* console.log(credential.user); */
     this.afs.collection('users').doc(`${credential.user.uid}`).valueChanges().subscribe( response => {
       if ( response === null || response === undefined ) {
         this.googleUpdateUserData(credential.user);
