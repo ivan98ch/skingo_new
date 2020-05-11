@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from '@angular/fire/firestore';
 import { AuthService } from './auth.service';
+import { UserModel } from '../models/userModel.model';
 
 
 @Injectable({
@@ -11,14 +12,15 @@ export class UserUpdateService {
 
   constructor(
     private afs: AngularFirestore,
-    private auth: AuthService
+    private authService: AuthService
   ) {}
 
   getUserData() {
-    return this.afs.collection('users').doc(`${this.auth.userUid}`).valueChanges();
+    const userRef: AngularFirestoreDocument<UserModel> = this.afs.doc(`users/${this.authService.userUid}`);
+    return userRef.valueChanges();
   }
 
-  updateUserData(userData) {
+  updateUserData(userData: UserModel) {
     const data = {
       email: userData.email,
       name: userData.name,
@@ -28,8 +30,8 @@ export class UserUpdateService {
       birthDate: userData.birthDate
     };
 
-    return this.afs.doc(`users/${this.auth.userUid}`).set(data, { merge: true });
-
+    const userRef: AngularFirestoreDocument<UserModel> = this.afs.doc(`users/${this.authService.userUid}`);
+    return userRef.set(data, { merge: true });
   }
 
 

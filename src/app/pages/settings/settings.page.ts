@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { UserUpdateService } from '../../services/user-update.service';
 import { ToastService } from '../../services/toast.service';
 import { AuthService } from '../../services/auth.service';
+import { UserRegisterModel } from 'src/app/models/userRegisterModel.model';
+import { UserModel } from 'src/app/models/userModel.model';
 
 @Component({
   selector: 'app-settings',
@@ -10,15 +12,23 @@ import { AuthService } from '../../services/auth.service';
 })
 export class SettingsPage implements OnInit {
 
-  postData = {
+  userData: UserRegisterModel = {
     name: '',
     firstSurname: '',
     secondSurname: '',
+    gender: '',
+    birthDate: '',
     email: '',
     password: '',
     repeatPassword: '',
+  };
+  postData: UserModel = {
+    name: '',
+    firstSurname: '',
+    secondSurname: '',
     gender: '',
-    birthDate: ''
+    birthDate: '',
+    email: '',
   };
 
   constructor(
@@ -28,25 +38,20 @@ export class SettingsPage implements OnInit {
     ) {}
 
   ngOnInit() {
-    this.userUpdateService.getUserData().subscribe( userData => {
-      this.postData.name = userData.name;
-      this.postData.firstSurname = userData.firstSurname;
-      this.postData.secondSurname = userData.secondSurname;
-      this.postData.email = userData.email;
-      this.postData.gender = userData.gender;
-      this.postData.birthDate = userData.birthDate;
+    this.userUpdateService.getUserData().subscribe( postData => {
+      this.postData = postData;
     } );
   }
 
-  updateUser(){
+  updateUser() {
     if ( this.validateInputs() && this.validatePassword() ) {
       this.userUpdateService.updateUserData(this.postData).then( response => {
-        this.postData.password = '';
-        this.postData.repeatPassword = '';
+        this.userData.password = '';
+        this.userData.repeatPassword = '';
         this.toastService.presentToastSuccess(
           'Se ha modificado correctamente el usuario.'
         );
-      }, err =>{
+      }, err => {
         this.toastService.presentToastError(
           'Error inesperado: ' + err
         );
@@ -55,13 +60,13 @@ export class SettingsPage implements OnInit {
   }
 
   validateInputs() {
-    console.log(this.postData);
+    // console.log(this.userData);
     const name = this.postData.name.trim();
     const firstSurname = this.postData.firstSurname.trim();
-    const password = this.postData.password.trim();
-    const repeatPassword = this.postData.repeatPassword.trim();
+    const password = this.userData.password.trim();
+    const repeatPassword = this.userData.repeatPassword.trim();
     if ( this.postData.name && this.postData.firstSurname &&
-         this.postData.password && this.postData.repeatPassword &&
+         this.userData.password && this.userData.repeatPassword &&
          name.length > 0 && firstSurname.length > 0  &&
          password.length > 0 && repeatPassword.length > 0  ) {
         return true;
@@ -74,7 +79,7 @@ export class SettingsPage implements OnInit {
   }
 
   validatePassword() {
-    if ( this.postData.password === this.postData.repeatPassword ) {
+    if ( this.userData.password === this.userData.repeatPassword ) {
       return true;
     }
     this.toastService.presentToastError(
