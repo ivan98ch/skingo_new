@@ -8,6 +8,7 @@ import { isNullOrUndefined } from 'util';
   providedIn: 'root'
 })
 export class IndexGuard implements CanActivate {
+
   constructor(private afAuth: AngularFireAuth, public router: Router) {}
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
