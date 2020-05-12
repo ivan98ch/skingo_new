@@ -8,10 +8,12 @@ import { HttpService } from './http.service';
 import { auth } from 'firebase/app';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
+import { GooglePlus } from '@ionic-native/google-plus/ngx';
 
 import { ToastService } from './toast.service';
 import { UserModel } from '../models/userModel.model';
 import { UserRegisterModel } from '../models/userRegisterModel.model';
+import { Platform } from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root'
@@ -19,24 +21,45 @@ import { UserRegisterModel } from '../models/userRegisterModel.model';
 export class AuthService {
 
   constructor(
-    private httpService: HttpService,
     private router: Router,
     private afAuth: AngularFireAuth,
     private afs: AngularFirestore,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private platform: Platform,
+    private glplus: GooglePlus
   ) {}
 
+
   async googleSignIn() {
-    const credential = await this.afAuth.signInWithPopup(new auth.GoogleAuthProvider());
-    this.afs.collection('users').doc(`${credential.user.uid}`).valueChanges().subscribe( response => {
-      if ( response === null || response === undefined ) {
-        this.googleUpdateUserData(credential.user);
-        this.toastService.presentToastSuccess(
-          'Entra de nuevo para confirmar tu registro, gracias'
-        );
-      }
-    });
-    return this.router.navigate(['home']);
+    try {
+      await this.afAuth.signInWithPopup(new auth.GoogleAuthProvider()).then( credential => {
+        this.afs.collection('users').doc(`${credential.user.uid}`).valueChanges().subscribe( response => {
+          if ( response === null || response === undefined ) {
+            this.googleUpdateUserData(credential.user);
+            this.toastService.presentToastSuccess(
+              'Entra de nuevo para confirmar tu registro, gracias'
+            );
+          }
+        });
+      });
+      return this.router.navigate(['home']);
+    } catch (error) {
+      console.log('Google Login: ' + error);
+    }
+
+  }
+
+  async nativeGoogleSignIn() {
+      return await this.glplus.login({}).then( gplusUser => {
+        return this.afAuth.signInWithCredential( auth.GoogleAuthProvider.credential(null, gplusUser.accessToken )).then( credential => {
+         return this.afs.collection('users').doc(`${credential.user.uid}`).valueChanges().subscribe( response => {
+            if ( response === null || response === undefined ) {
+              this.googleUpdateUserData(credential.user);
+            }
+            return this.router.navigate(['home']);
+          });
+         });
+      });
   }
 
   private googleUpdateUserData( user ) {
@@ -59,11 +82,9 @@ export class AuthService {
 
   async emailSignIn( user ) {
     try {
-      return await this.afAuth.signInWithEmailAndPassword(user.email, user.password)
-        .then( fun => {
-          this.router.navigate(['/home']);
-        }
-      );
+      return await this.afAuth.signInWithEmailAndPassword(user.email, user.password).then( info => {
+         this.router.navigate(['/home']);
+      });
 
     } catch (err) {
       this.toastService.presentToastError(
@@ -112,6 +133,9 @@ export class AuthService {
 
   async signOut() {
     await this.afAuth.signOut();
+    if (this.platform.is('android')) {
+      this.glplus.logout();
+    }
     return this.router.navigate(['']);
   }
 
