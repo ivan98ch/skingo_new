@@ -12,12 +12,12 @@
     <form>
         <ion-list>
             <ion-item>
-                <ion-label position="stacked">Email</ion-label>
-                <ion-input autocomplete="off" type="text" name="username" [(ngModel)]="postData.username"></ion-input>
+                <ion-label position="stacked">Email*</ion-label>
+                <ion-input autocomplete="off" type="text" name="username" [(ngModel)]="postData.email"></ion-input>
             </ion-item>
 
             <ion-item>
-                <ion-label position="stacked">Contraseña</ion-label>
+                <ion-label position="stacked">Contraseña*</ion-label>
                 <ion-input autocomplete="off" type="password" name="password" [(ngModel)]="postData.password"></ion-input>
             </ion-item>
 
@@ -27,6 +27,6 @@
         </ion-list>
         <ion-button expand="block" share="round" color="skingoColor" (click)="onLogin()">Login</ion-button>
         <br>
-        <img src="assets/images/googleButton.png" style="width : 100% ; height : 100%" (click)="authService.googleSignIn()">
+        <img src="assets/images/googleButton.png" style="width : 100% ; height : 100%" (click)="googleLogin()">
     </form>
 </ion-content>

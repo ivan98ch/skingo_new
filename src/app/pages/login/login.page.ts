@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { AuthService } from './../../services/auth.service';
 import { StorageService } from './../../services/storage.service';
 import { ToastService } from './../../services/toast.service';
+import { Platform } from '@ionic/angular';
 
 @Component({
   selector: 'app-login',
@@ -10,25 +11,34 @@ import { ToastService } from './../../services/toast.service';
   styleUrls: ['./login.page.scss']
 })
 export class LoginPage implements OnInit {
+
   postData = {
-    username: '',
+    email: '',
     password: ''
   };
 
   constructor(
     private router: Router,
     public authService: AuthService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private platform: Platform
   ) {}
 
   ngOnInit() {}
 
+  googleLogin() {
+    if (this.platform.is('android')) {
+      this.authService.nativeGoogleSignIn();
+    } else {
+      this.authService.googleSignIn();
+    }
+  }
+
   validateInputs() {
-    // console.log(this.postData);
-    const username = this.postData.username.trim();
+    const username = this.postData.email.trim();
     const password = this.postData.password.trim();
     return (
-      this.postData.username &&
+      this.postData.email &&
       this.postData.password &&
       username.length > 0 &&
       password.length > 0

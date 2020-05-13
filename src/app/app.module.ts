@@ -13,6 +13,7 @@ import { AppComponent } from './app.component';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireAuthModule } from '@angular/fire/auth';
+import { GooglePlus } from '@ionic-native/google-plus/ngx/';
 
 import { environment } from 'src/environments/environment';
 import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
@@ -30,9 +31,10 @@ import { Crop } from '@ionic-native/crop/ngx';
     HttpClientModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
-    AngularFireAuthModule,
+    AngularFireAuthModule
   ],
   providers: [
+    GooglePlus,
     StatusBar,
     SplashScreen,
     HttpClientModule,
