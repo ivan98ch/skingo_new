@@ -36,9 +36,6 @@ export class AuthService {
         this.afs.collection('users').doc(`${credential.user.uid}`).valueChanges().subscribe( response => {
           if ( response === null || response === undefined ) {
             this.googleUpdateUserData(credential.user);
-            this.toastService.presentToastSuccess(
-              'Entra de nuevo para confirmar tu registro, gracias'
-            );
           }
         });
       });

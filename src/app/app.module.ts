@@ -16,9 +16,13 @@ import { AngularFireAuthModule } from '@angular/fire/auth';
 import { GooglePlus } from '@ionic-native/google-plus/ngx/';
 
 import { environment } from 'src/environments/environment';
-import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
+
+import { Camera } from '@ionic-native/camera/ngx';
+import { File } from '@ionic-native/File/ngx';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
 import { Crop } from '@ionic-native/crop/ngx';
+import { FilePath } from '@ionic-native/file-path/ngx';
+import { IonicStorageModule } from '@ionic/storage';
 
 
 @NgModule({
@@ -29,6 +33,7 @@ import { Crop } from '@ionic-native/crop/ngx';
     IonicModule.forRoot(),
     AppRoutingModule,
     HttpClientModule,
+    IonicStorageModule.forRoot(),
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
     AngularFireAuthModule
@@ -39,6 +44,8 @@ import { Crop } from '@ionic-native/crop/ngx';
     SplashScreen,
     HttpClientModule,
     Camera,
+    File,
+    FilePath,
     WebView,
     Crop,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }

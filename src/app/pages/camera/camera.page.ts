@@ -1,80 +1,169 @@
-import { Component, OnInit } from '@angular/core';
-import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Camera, CameraOptions, PictureSourceType } from '@ionic-native/camera/ngx';
+import { ActionSheetController, ToastController, Platform, LoadingController } from '@ionic/angular';
+import { File, FileEntry } from '@ionic-native/File/ngx';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
-import { Crop } from '@ionic-native/crop/ngx';
+import { Storage } from '@ionic/storage';
+import { FilePath } from '@ionic-native/file-path/ngx';
+import { finalize } from 'rxjs/operators';
+import { ToastService } from '../../services/toast.service';
+
+const STORAGE_KEY = 'my_images';
 
 @Component({
   selector: 'app-camera',
   templateUrl: './camera.page.html',
   styleUrls: ['./camera.page.scss'],
 })
+
 export class CameraPage implements OnInit {
 
-  // tslint:disable-next-line: ban-types
-  image: string;
-  // tslint:disable-next-line: ban-types
-  image2: string;
-  // tslint:disable-next-line: ban-types
-  url: string;
-  // tslint:disable-next-line: ban-types
-  filename: string;
-  // tslint:disable-next-line: ban-types
-  completeUrl: string;
+    data = '';
 
-  constructor(private camera: Camera, private webView: WebView, private crop: Crop) {
+    constructor(
+        private camera: Camera,
+        private file: File,
+        private http: HttpClient,
+        private webview: WebView,
+        private actionSheetController: ActionSheetController,
+        private toastController: ToastController,
+        private storage: Storage,
+        private plt: Platform,
+        private loadingController: LoadingController,
+        private ref: ChangeDetectorRef,
+        private filePath: FilePath,
+        private platform: Platform,
+        private toastService: ToastService,
+    ) { }
 
+  ngOnInit() { }
+
+    pathForImage( img ) {
+        if (img === null) {
+            return '';
+        } else {
+            const converted = this.webview.convertFileSrc(img);
+            return converted;
+        }
+    }
+
+  async selectImage() {
+    const actionSheet = await this.actionSheetController.create({
+        buttons: [{
+                text: 'Galería',
+                handler: () => {
+                    this.takePicture(this.camera.PictureSourceType.PHOTOLIBRARY);
+                }
+            },
+            {
+                text: 'Cámara',
+                handler: () => {
+                    this.takePicture(this.camera.PictureSourceType.CAMERA);
+                }
+            },
+            {
+                text: 'Cancelar',
+                role: 'cancel'
+            }
+        ]
+    });
+    await actionSheet.present();
   }
 
-  async takePicture() {
+  takePicture(sourceType: PictureSourceType) {
     const options: CameraOptions = {
-      quality: 100,
-      destinationType: this.camera.DestinationType.FILE_URI,
-      encodingType: this.camera.EncodingType.JPEG,
-      mediaType: this.camera.MediaType.PICTURE,
-      sourceType: this.camera.PictureSourceType.CAMERA
+        quality: 100,
+        sourceType,
+        saveToPhotoAlbum: false,
+        correctOrientation: true
     };
 
-    const tempImage =  await this.camera.getPicture(options);
-    this.camera.getPicture(options)
-    .then((file) => {
-      this.url = tempImage.substr(0, tempImage.lastIndexOf('/') + 1);
-      this.filename = tempImage.substr(tempImage.lastIndexOf('/') + 1);
-      this.completeUrl = this.url + '' + this.filename;
-      this.image = this.webView.convertFileSrc(file);
-    }, (err) => {
-     console.log ('Error al hacer la foto: ' + err);
+    this.camera.getPicture(options).then(imagePath => {
+        this.startUpload(imagePath);
     });
   }
 
-  async takeFromGallery() {
-    const options: CameraOptions = {
-      quality: 100,
-      destinationType: this.camera.DestinationType.FILE_URI,
-      encodingType: this.camera.EncodingType.JPEG,
-      mediaType: this.camera.MediaType.PICTURE,
-      sourceType: this.camera.PictureSourceType.PHOTOLIBRARY
-    };
 
-    const tempImage =  await this.camera.getPicture(options);
-    this.camera.getPicture(options)
-    .then((file) => {
-      this.url = tempImage.substr(0, tempImage.lastIndexOf('/') + 1);
-      this.filename = tempImage.substr(tempImage.lastIndexOf('/') + 1);
-      this.completeUrl = this.url + '' + this.filename;
-      this.image2 = this.webView.convertFileSrc(file);
-    }, (err) => {
-     console.log ('Error al recuperar la foto de la galeria: ' + err);
-    });
-  }
+startUpload(imagePath) {
+  this.file.resolveLocalFilesystemUrl( imagePath )
+      .then(entry => {
+          ( entry as FileEntry ).file(file => this.readFile(file));
+      })
+      .catch(err => {
+        this.toastService.presentToastError('Error while reading file.');
+      });
+}
 
-  cropPicture() {
-    this.crop.crop(this.completeUrl, {quality: 100}).then(
-      newImage => console.log('La nueva ruta es: ' + newImage),
-      error => console.error('Error al recortar la imagen', error)
-    );
-  }
+readFile(file: any) {
+  const reader = new FileReader();
+  reader.onload = () => {
+      const formData = new FormData();
+      const imgBlob = new Blob([reader.result], {
+          type: file.type
+      });
+      formData.append('image', imgBlob, file.name);
+      this.uploadImageData(formData);
+  };
+  reader.readAsArrayBuffer(file);
+}
 
-  ngOnInit() {
-  }
+async uploadImageData(formData: FormData) {
+  const loading = await this.loadingController.create({
+      message: 'Consultando Imagen...',
+  });
+  await loading.present();
+
+  const endPoint = 'https://buscadorproductosimagen.cognitiveservices.azure.com/bing/v7.0/images/visualsearch';
+  const headers: HttpHeaders = new HttpHeaders({
+    'Ocp-Apim-Subscription-Key': '14b28ea4a801419faa6f15e769862ba0',
+    'X-BingApis-SDK': 'true',
+    'Content-Type': 'multipart/form-data'
+  });
+  const options = { headers };
+
+
+  this.http.post(endPoint, formData, options)
+      .pipe(
+          finalize(() => {
+              loading.dismiss();
+          })
+      )
+      .subscribe(res => {
+        if ( res['tags'] && res['tags'][0] && res['tags'][0]['actions'] ) {
+
+            res['tags'][0]['actions'].forEach(element => {
+                if(element['actionType'] == 'ProductVisualSearch'){
+
+                }
+                console.log();
+            });
+
+        }
+      });
+}
+
+parseResponse(json) {
+    var dict = [];
+    for (var i =0; i < json.tags.length; i++) {
+        var tag = json.tags[i];
+
+        if (tag.displayName === '') {
+            dict.push({
+                key: 'Default',
+                value: JSON.stringify(tag)
+            });
+            // dict.('Default', JSON.stringify(tag));
+            // dict['Default'] = JSON.stringify(tag);
+        } else {
+            dict.push({
+                key: tag.displayName,
+                value: JSON.stringify(tag)
+            });
+            // dict[tag.displayName] = JSON.stringify(tag);
+        }
+    }
+    return(dict);
+}
 
 }
