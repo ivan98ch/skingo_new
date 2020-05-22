@@ -130,13 +130,15 @@ async uploadImageData(formData: FormData) {
           })
       )
       .subscribe(res => {
+        console.log('1');
         if ( res['tags'] && res['tags'][0] && res['tags'][0]['actions'] ) {
-
+            console.log('2');
             res['tags'][0]['actions'].forEach(element => {
-                if(element['actionType'] == 'ProductVisualSearch'){
+                console.log('*');
+                console.log(element);
+                if(element['actionType'] && element['actionType'] == 'ProductVisualSearch'){
 
                 }
-                console.log();
             });
 
         }
