@@ -7,4 +7,8 @@ export interface UserRegisterModel {
     email: string;
     password: string;
     repeatPassword: string;
+    isPremium: number;
+    isAdmin: number;
+    totalPhotoMade: number;
+    firstPhotoDate: string;
 }

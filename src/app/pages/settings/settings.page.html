@@ -1,6 +1,7 @@
-<ion-header>
-    <ion-toolbar>
-        <ion-title>Settings</ion-title>
+<ion-header class="ion-no-border">
+    <ion-toolbar color="skingoColor">
+        <ion-title>Skingo</ion-title>
+        <ion-title size="small">Ajustes</ion-title>
     </ion-toolbar>
 </ion-header>
 
@@ -35,6 +36,8 @@
         </ion-list>
         <ion-button expand="block" share="round" color="skingoColor" (click)='updateUser()'>Modificar</ion-button>
     </form>
+    <br>
+    <ion-button expand="block" color='skingoColor'>Comprar Premium</ion-button>
     <br>
     <ion-button expand="block" color='skingoColor' (click)="auth.signOut()">Log Out</ion-button>
 </ion-content>

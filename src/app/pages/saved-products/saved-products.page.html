@@ -1,31 +1,39 @@
-<ion-header>
-    <ion-toolbar>
-        <ion-title>Saved Products</ion-title>
+<ion-header class="ion-no-border">
+    <ion-toolbar color="skingoColor">
+        <ion-title>Skingo</ion-title>
+        <ion-title size="small">Productos Guardados</ion-title>
     </ion-toolbar>
 </ion-header>
 
 <ion-content>
 
-    <ion-card>
-        <ion-card-header>
-            <img src="https://15f8034cdff6595cbfa1-1dd67c28d3aade9d3442ee99310d18bd.ssl.cf3.rackcdn.com//uploaded_thumb_big/e38df531dba53b06438b311cb6136e9e/camiseta_roja_frontal_personalizable.jpg" alt="">
-            <br><br>
-            <ion-card-title>Camiseta Roja</ion-card-title>
-        </ion-card-header>
+    <h3 *ngIf="data.length == 0" class="ion-padding ion-text-center">No tienes productos guardados!</h3>
 
-        <ion-card-content>
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-            <br><br>
-            <ion-icon name="cart" color="dark"></ion-icon>
-            <ion-label color="dark"> Amazon.es</ion-label>
-        </ion-card-content>
+    <ion-list>
+        <ion-item-sliding *ngFor="let dataItem of data; index as pos">
 
-        <section class="buttonCenter">
-            <ion-button size="small" color="success">Comprar</ion-button>
-            <ion-button size="small" color="warning">Guardar</ion-button>
-        </section>
-        <br>
-    </ion-card>
+            <ion-item-options side="start">
+                <ion-item-option color="success" (click)="openBuyPage(dataItem.buyUrl)">Comprar</ion-item-option>
+            </ion-item-options>
+
+            <ion-item>
+
+                <ion-thumbnail slot="start">
+                    <ion-img [src]="dataItem.imageUrl"></ion-img>
+                </ion-thumbnail>
+                <ion-label>
+                    {{ dataItem.name }} <br>
+                    <small><ion-icon color="skingoColor" name="cart"></ion-icon> {{ dataItem.buyUrl | namePagePipe }}</small>
+                </ion-label>
+
+            </ion-item>
+
+            <ion-item-options side="end">
+                <ion-item-option color="danger" (click)="deleteData(pos)">Eliminar</ion-item-option>
+            </ion-item-options>
+
+        </ion-item-sliding>
+    </ion-list>
 
 
 </ion-content>

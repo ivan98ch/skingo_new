@@ -11,7 +11,8 @@ export class ToastService {
     const toast = await this.toastController.create({
       message: infoMessage,
       duration: 2000,
-      color: 'danger'
+      color: 'danger',
+      cssClass: 'toast-wrapper'
     });
     toast.present();
   }
@@ -20,7 +21,8 @@ export class ToastService {
     const toast = await this.toastController.create({
       message: infoMessage,
       duration: 2000,
-      color: 'success'
+      color: 'success',
+      cssClass: 'toast-wrapper'
     });
     toast.present();
   }

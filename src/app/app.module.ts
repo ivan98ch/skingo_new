@@ -24,6 +24,8 @@ import { Crop } from '@ionic-native/crop/ngx';
 import { FilePath } from '@ionic-native/file-path/ngx';
 import { IonicStorageModule } from '@ionic/storage';
 
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+
 
 @NgModule({
   declarations: [AppComponent],
@@ -48,6 +50,7 @@ import { IonicStorageModule } from '@ionic/storage';
     FilePath,
     WebView,
     Crop,
+    InAppBrowser,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

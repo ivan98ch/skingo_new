@@ -1,50 +1,43 @@
 import { Injectable } from '@angular/core';
-import { Plugins } from '@capacitor/core';
-const { Storage } = Plugins;
+import { StoredItemModel } from '../models/storedItemModel.model';
+import { Storage } from '@ionic/storage';
+import { Router } from '@angular/router';
+
+
+const STORAGE_KEY = 'skingoData';
+
 @Injectable({
   providedIn: 'root'
 })
+
 export class StorageService {
-  constructor() {}
 
-  // Store the value
-  async store(storageKey: string, value: any) {
-    const encryptedValue = btoa(escape(JSON.stringify(value)));
-    await Storage.set({
-      key: storageKey,
-      value: encryptedValue
+  data: StoredItemModel[];
+  item: StoredItemModel = {
+    buyUrl: '',
+    imageUrl: '',
+    name: ''
+  };
+
+  constructor(
+    private storage: Storage,
+    private router: Router,
+  ) {}
+
+  updateItemStoredData(dataItem) {
+    this.item.buyUrl = dataItem['hostPageUrl'];
+    this.item.imageUrl = dataItem['thumbnailUrl'];
+    this.item.name = dataItem['name'];
+
+    this.storage.get(STORAGE_KEY).then( data => {
+        this.data = JSON.parse(data);
+        if (!this.data) {
+            this.data = [this.item];
+        } else {
+            this.data.push(this.item);
+        }
+        this.storage.set(STORAGE_KEY, JSON.stringify(this.data));
+        this.data = [this.item, ...this.data];
     });
-  }
-
-  // Get the value
-  async get(storageKey: string) {
-    const ret = await Storage.get({ key: storageKey });
-    if (ret.value) {
-      return JSON.parse(unescape(atob(ret.value)));
-    } else {
-      return false;
-    }
-  }
-
-  // JSON "get" example
-  async getObject() {
-    const ret = await Storage.get({ key: 'user' });
-    const user = JSON.parse(ret.value);
-  }
-
-  async setItem() {
-    await Storage.set({
-      key: 'name',
-      value: 'Max'
-    });
-  }
-
-  async keys() {
-    const keys = await Storage.keys();
-    console.log('Got keys: ', keys);
-  }
-
-  async clear() {
-    await Storage.clear();
   }
 }

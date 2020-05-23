@@ -5,4 +5,8 @@ export interface UserModel {
     gender: string;
     birthDate: string;
     email: string;
+    isPremium: number;
+    isAdmin: number;
+    totalPhotoMade: number;
+    firstPhotoDate: string;
 }

@@ -20,7 +20,11 @@ export class SignupPage implements OnInit {
     password: '',
     repeatPassword: '',
     gender: '',
-    birthDate: null
+    birthDate: null,
+    isPremium: 0,
+    isAdmin: 0,
+    totalPhotoMade: 0,
+    firstPhotoDate: new Date().toString(),
   };
 
   pipe = new DatePipe('en-US');

@@ -6,6 +6,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { CameraPage } from './camera.page';
+import { NamePagePipePipe } from '../../pipes/name-page-pipe.pipe';
 
 const routes: Routes = [
   {
@@ -21,6 +22,7 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [CameraPage]
+  declarations: [CameraPage, NamePagePipePipe],
+  exports: []
 })
 export class CameraPageModule {}

@@ -71,7 +71,11 @@ export class AuthService {
       firstSurname: completeName != null && completeName[1] != null ? completeName[1] : '',
       secondSurname: completeName != null && completeName[2] != null ? completeName[2] : '',
       gender: '',
-      birthDate: null
+      birthDate: '',
+      isPremium: 0,
+      isAdmin: 0,
+      totalPhotoMade: 0,
+      firstPhotoDate: new Date().toString(),
     };
 
     return userRef.set(data, { merge: true });
@@ -122,7 +126,11 @@ export class AuthService {
       firstSurname: userData.firstSurname,
       secondSurname: userData.secondSurname,
       gender: userData.gender,
-      birthDate: userData.birthDate
+      birthDate: userData.birthDate,
+      isPremium: 0,
+      isAdmin: 0,
+      totalPhotoMade: 0,
+      firstPhotoDate: new Date().toString(),
     };
 
     return userRef.set(data, { merge: true });

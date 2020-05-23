@@ -6,6 +6,8 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { SavedProductsPage } from './saved-products.page';
+import { NamePagePipePipe } from '../../pipes/name-page-pipe.pipe';
+
 
 const routes: Routes = [
   {
@@ -21,6 +23,6 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [SavedProductsPage]
+  declarations: [SavedProductsPage, NamePagePipePipe]
 })
 export class SavedProductsPageModule {}
