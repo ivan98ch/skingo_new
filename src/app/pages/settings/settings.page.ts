@@ -5,6 +5,7 @@ import { AuthService } from '../../services/auth.service';
 import { UserRegisterModel } from 'src/app/models/userRegisterModel.model';
 import { UserModel } from 'src/app/models/userModel.model';
 import { AngularFireAuth } from '@angular/fire/auth';
+import { PayPal, PayPalPayment, PayPalConfiguration, PayPalPaymentDetails } from '@ionic-native/paypal/ngx';
 
 @Component({
   selector: 'app-settings',
@@ -38,27 +39,27 @@ export class SettingsPage implements OnInit {
     isAdmin: 0,
     totalPhotoMade: 0,
     firstPhotoDate: '',
+    uid: '',
   };
 
   constructor(
     private userUpdateService: UserUpdateService,
     public auth: AuthService,
     private afAuth: AngularFireAuth,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private payPal: PayPal
     ) {}
 
   ngOnInit() {
     this.userUpdateService.getUserData().subscribe( postData => {
       this.postData = postData;
     } );
-    console.log(this.userUpdateService.getUserProvider());
   }
 
   updateUser() {
-    if ( this.validateInputs() && this.validatePassword() && this.updateUserPassword(this.userData.password) ) {
+    if ( this.validateInputs() && this.updateUserPassword(this.userData.password) ) {
       this.userUpdateService.updateUserData(this.postData).then( response => {
-        this.userData.password = '';
-        this.userData.repeatPassword = '';
+
       }, err => {
         this.toastService.presentToastError(
           'Error inesperado: ' + err
@@ -71,12 +72,9 @@ export class SettingsPage implements OnInit {
     // console.log(this.userData);
     const name = this.postData.name.trim();
     const firstSurname = this.postData.firstSurname.trim();
-    const password = this.userData.password.trim();
-    const repeatPassword = this.userData.repeatPassword.trim();
     if ( this.postData.name && this.postData.firstSurname &&
          this.userData.password && this.userData.repeatPassword &&
-         name.length > 0 && firstSurname.length > 0  &&
-         password.length > 0 && repeatPassword.length > 0  ) {
+         name.length > 0 && firstSurname.length > 0  ) {
         return true;
     } else {
       this.toastService.presentToastError(
@@ -86,15 +84,6 @@ export class SettingsPage implements OnInit {
     }
   }
 
-  validatePassword() {
-    if ( this.userData.password === this.userData.repeatPassword ) {
-      return true;
-    }
-    this.toastService.presentToastError(
-      'Las contraseñas no coinciden, por favor revisa los campos'
-    );
-    return false;
-  }
 
   updateUserPassword(password) {
     return this.userUpdateService.passwordUpdate(password).then( result => {
@@ -109,6 +98,34 @@ export class SettingsPage implements OnInit {
       console.log(err);
       return false;
     });
+  }
+
+  comprar() {
+    this.payPal.init({
+      PayPalEnvironmentProduction: '',
+      PayPalEnvironmentSandbox: 'ARRwy1CvtFkobb64LewCgiDkxzTE6EMZPPqD1lH4wTvjm3GqSDlK0NS_6Hw32E5k_K8dbMkDnvoVSuBu'
+    }).then(() => {
+      this.payPal.prepareToRender('PayPalEnvironmentSandbox', new PayPalConfiguration({
+        acceptCreditCards: true,
+        languageOrLocale: 'es-ES',
+        merchantName: 'Skingo',
+        merchantPrivacyPolicyURL: '',
+        merchantUserAgreementURL: ''
+      })).then(() => {
+        const detail = new PayPalPaymentDetails('15', '0', '0');
+        const payment = new PayPalPayment('15','EUR','Skingo Premium', 'Sale', detail);
+        this.payPal.renderSinglePaymentUI(payment).then(response => {
+          console.log('Pago realizado');
+          this.userUpdateService.setUserToPremium(this.postData).then(() => {
+            this.toastService.presentToastSuccess(
+              'Ahora eres PREMIUM!! Gracias por tu compra'
+            );
+          })
+        });
+      }, () =>{
+        console.log('Error en la compra');
+      } )
+    })
   }
 
 

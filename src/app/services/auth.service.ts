@@ -49,7 +49,8 @@ export class AuthService {
   async nativeGoogleSignIn() {
       return await this.glplus.login({}).then( gplusUser => {
         return this.afAuth.signInWithCredential( auth.GoogleAuthProvider.credential(null, gplusUser.accessToken )).then( credential => {
-         return this.afs.collection('users').doc(`${credential.user.uid}`).valueChanges().subscribe( response => {
+         return this.afs.collection('users').doc(`${credential.user.uid}`).valueChanges()
+         .subscribe( response => {
             if ( response === null || response === undefined ) {
               this.googleUpdateUserData(credential.user);
             }
@@ -76,6 +77,7 @@ export class AuthService {
       isAdmin: 0,
       totalPhotoMade: 0,
       firstPhotoDate: new Date().toString(),
+      uid: user.uid
     };
 
     return userRef.set(data, { merge: true });
@@ -131,6 +133,7 @@ export class AuthService {
       isAdmin: 0,
       totalPhotoMade: 0,
       firstPhotoDate: new Date().toString(),
+      uid: userUid,
     };
 
     return userRef.set(data, { merge: true });

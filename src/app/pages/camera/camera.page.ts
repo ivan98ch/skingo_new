@@ -34,6 +34,7 @@ export class CameraPage implements OnInit {
         isAdmin: 0,
         totalPhotoMade: 0,
         firstPhotoDate: '',
+        uid: '',
       };
 
     constructor(
@@ -47,7 +48,7 @@ export class CameraPage implements OnInit {
         private toastService: ToastService,
         private inAppBrowser: InAppBrowser,
         public storageService: StorageService,
-        private userUpdateService: UserUpdateService
+        private userUpdateService: UserUpdateService,
     ) { }
 
     ngOnInit() { }
@@ -89,7 +90,7 @@ export class CameraPage implements OnInit {
 
     takePicture(sourceType: PictureSourceType) {
         const options: CameraOptions = {
-            quality: 100,
+            quality: 20,
             sourceType,
             saveToPhotoAlbum: false,
             correctOrientation: true
@@ -147,7 +148,7 @@ export class CameraPage implements OnInit {
             if ( res['tags'] && res['tags'][0] && res['tags'][0]['actions'] ) {
                 // console.log(res['tags'][0]['actions']);
                 res['tags'][0]['actions'].forEach(element => {
-                    if (element['actionType'] && element['actionType'] == 'PagesIncluding' /* ProductVisualSearch */) {
+                    if (element['actionType'] && element['actionType'] == 'ProductVisualSearch' /* ProductVisualSearch  PagesIncluding*/) {
                         this.data = element['data']['value'];
                         this.toastService.presentToastSuccess(
                             'Búsqueda realizada correctamente!'
@@ -177,21 +178,18 @@ export class CameraPage implements OnInit {
         this.userUpdateService.getUserData().subscribe( result => {
             this.postData = result;
         } );
-        console.log(this.calculateDiff(this.postData.firstPhotoDate));
-        if (this.postData.totalPhotoMade === 0) {
-            this.userUpdateService.updateFirstPhotoDate(this.postData);
-        }
+
         if (this.postData.isPremium === 1) {
             return true;
         }
         if (this.postData.totalPhotoMade < 10) {
-            // CALL ADS
+            // TODO
             return true;
         }
         if (this.postData.totalPhotoMade >= 10 && this.calculateDiff(this.postData.firstPhotoDate) > 30) {
             this.userUpdateService.updateFirstPhotoDate(this.postData);
-            this.userUpdateService.updateZeroToPhotoMade(this.postData);
-            // CALL ADS
+            // this.userUpdateService.updateZeroToPhotoMade(this.postData);
+            // TODO
             return true;
         }
         if (this.postData.totalPhotoMade >= 10 && this.calculateDiff(this.postData.firstPhotoDate) < 30) {

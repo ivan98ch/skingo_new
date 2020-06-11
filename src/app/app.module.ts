@@ -26,6 +26,9 @@ import { IonicStorageModule } from '@ionic/storage';
 
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 
+import { PayPal } from '@ionic-native/paypal/ngx';
+
+
 
 @NgModule({
   declarations: [AppComponent],
@@ -51,6 +54,7 @@ import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
     WebView,
     Crop,
     InAppBrowser,
+    PayPal,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

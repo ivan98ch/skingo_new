@@ -30,6 +30,7 @@ export class UserUpdateService {
     isAdmin: 0,
     totalPhotoMade: 0,
     firstPhotoDate: '',
+    uid: '',
   };
 
   getUserData() {
@@ -55,21 +56,28 @@ export class UserUpdateService {
     this.postData = postData;
     this.postData.totalPhotoMade = this.postData.totalPhotoMade + 1;
     const userRef: AngularFirestoreDocument<UserModel> = this.afs.doc(`users/${this.guard.userUID}`);
-    return userRef.set(this.postData, { merge: true });
+    return userRef.update(this.postData);
   }
 
   updateFirstPhotoDate(postData) {
     this.postData = postData;
     this.postData.firstPhotoDate = new Date().toString();
     const userRef: AngularFirestoreDocument<UserModel> = this.afs.doc(`users/${this.guard.userUID}`);
-    return userRef.set(this.postData, { merge: true });
+    return userRef.update(this.postData);
   }
 
   updateZeroToPhotoMade(postData) {
     this.postData = postData;
     this.postData.totalPhotoMade = 0;
     const userRef: AngularFirestoreDocument<UserModel> = this.afs.doc(`users/${this.guard.userUID}`);
-    return userRef.set(this.postData, { merge: true });
+    return userRef.update(this.postData);
+  }
+
+  setUserToPremium(postData) {
+    this.postData = postData;
+    this.postData.isPremium = 1;
+    const userRef: AngularFirestoreDocument<UserModel> = this.afs.doc(`users/${this.guard.userUID}`);
+    return userRef.update(this.postData);
   }
 
 

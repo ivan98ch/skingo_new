@@ -7,8 +7,9 @@
 
 <ion-content class="ion-padding">
     <div class="center">
-        <img src="assets/icon/favicon.png" />
+        <img src="assets/images/logo.png" />
         <h1>Modificar Usuario</h1>
+        <h5 *ngIf='postData.isPremium === 1' class="premium">Usuario Premium</h5>
     </div>
     <form>
         <ion-list>
@@ -24,20 +25,12 @@
                 <ion-label position="stacked">Segundo apellido</ion-label>
                 <ion-input autocomplete="off" name="secondSurname" type="text" [(ngModel)]="postData.secondSurname"></ion-input>
             </ion-item>
-            <ion-item>
-                <ion-label position="stacked">Nueva contraseña*</ion-label>
-                <ion-input autocomplete="off" name="password" type="password" [(ngModel)]="userData.password"></ion-input>
-            </ion-item>
-            <ion-item>
-                <ion-label position="stacked">Repetir contraseña*</ion-label>
-                <ion-input autocomplete="off" name="repeatPassword" type="password" [(ngModel)]="userData.repeatPassword"></ion-input>
-            </ion-item>
 
         </ion-list>
         <ion-button expand="block" share="round" color="skingoColor" (click)='updateUser()'>Modificar</ion-button>
     </form>
     <br>
-    <ion-button expand="block" color='skingoColor'>Comprar Premium</ion-button>
+    <ion-button *ngIf='postData.isPremium === 0' expand="block" color='skingoColor' (click)='comprar()'>Comprar Premium</ion-button>
     <br>
     <ion-button expand="block" color='skingoColor' (click)="auth.signOut()">Log Out</ion-button>
 </ion-content>

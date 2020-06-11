@@ -9,4 +9,5 @@ export interface UserModel {
     isAdmin: number;
     totalPhotoMade: number;
     firstPhotoDate: string;
+    uid: string;
 }
