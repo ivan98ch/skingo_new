@@ -22,7 +22,7 @@
     "dependencies": {
         "@angular/common": "~9.1.4",
         "@angular/compiler": "~9.1.4",
-        "@angular/core": "~9.1.4",
+        "@angular/core": "~10.2.5",
         "@angular/fire": "^6.0.0",
         "@angular/forms": "~9.1.4",
         "@angular/platform-browser": "~9.1.4",
@@ -114,7 +114,7 @@
         "dependencies": {
             "@angular/common": "~9.1.4",
             "@angular/compiler": "~9.1.4",
-            "@angular/core": "~9.1.4",
+            "@angular/core": "~10.2.5",
             "@angular/fire": "^6.0.0",
             "@angular/forms": "~9.1.4",
             "@angular/platform-browser": "~9.1.4",
